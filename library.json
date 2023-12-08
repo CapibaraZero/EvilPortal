@@ -1,0 +1,21 @@
+{
+    "name": "EvilPortal",
+    "keywords": "esp32, captiveportal",
+    "description": "A library to create captive portal with ESP32",
+    "authors":
+	{
+		"name": "Andreock",
+		"maintainer": true
+	},
+	"repository":
+    {
+        "type": "git",
+        "url": "https://github.com/CapibaraZero/EvilPortal"
+    },
+    "version": "1.0",
+    "frameworks": "arduino",
+    "dependencies":
+    {
+	"esphome/ESPAsyncWebServer-esphome": "^3.1.0"
+    }
+}

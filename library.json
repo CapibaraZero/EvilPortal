@@ -19,6 +19,7 @@
 	    "esphome/ESPAsyncWebServer-esphome": "^3.1.0",
         "WiFi": "*",
         "ESPmDNS": "*",
-        "DNSServer": "*"
+        "DNSServer": "*",
+        "PosixSD": "https://github.com/CapibaraZero/PosixSD.git"
     }
 }

@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <ESPmDNS.h>
-#include "sdcard_helper.hpp"
 #include "evilportal.hpp"
 
 #define DNS_PORT 53

@@ -12,10 +12,13 @@
         "type": "git",
         "url": "https://github.com/CapibaraZero/EvilPortal"
     },
-    "version": "1.1",
+    "version": "1.11",
     "frameworks": "arduino",
     "dependencies":
     {
-	"esphome/ESPAsyncWebServer-esphome": "^3.1.0"
+	    "esphome/ESPAsyncWebServer-esphome": "^3.1.0",
+        "WiFi": "*",
+        "ESPmDNS": "*",
+        "DNSServer": "*"
     }
 }

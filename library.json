@@ -12,7 +12,7 @@
         "type": "git",
         "url": "https://github.com/CapibaraZero/EvilPortal"
     },
-    "version": "1.0",
+    "version": "1.1",
     "frameworks": "arduino",
     "dependencies":
     {

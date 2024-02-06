@@ -1,7 +1,23 @@
-#include "evilportal.hpp"
-#include "posixsd.hpp"	// Not so good. TODO: Try to remove it
+/*
+ * This file is part of the Capibara zero (https://github.com/CapibaraZero/fw or https://capibarazero.github.io/).
+ * Copyright (c) 2024 Andrea Canale.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
-FS sd_card = get_current_fs();
+#include "evilportal.hpp"
+#include "FS.h"
+#include "SD.h"
 
 const char not_found[] PROGMEM = R"=====(
 <!DOCTYPE html>
@@ -46,10 +62,10 @@ CaptiveRequestHandler::CaptiveRequestHandler()
 CaptiveRequestHandler::~CaptiveRequestHandler() {}
 
 void CaptiveRequestHandler::set_static_path(const char *path) {
-    server.serveStatic("/", sd_card, path);
+    server.serveStatic("/", SD, path);
     server.on("/", HTTP_GET, [path](AsyncWebServerRequest *request){
-	Serial0.printf("Client connected. Ip: %s\n", request->client()->remoteIP().toString());
-	request->send(sd_card, (String)path + "/index.html", "text/html");
+        Serial0.printf("Client connected. Ip: %s\n", request->client()->remoteIP().toString());
+        request->send(SD, (String)path + "/index.html", "text/html");
     });
 }
 

@@ -12,7 +12,7 @@
         "type": "git",
         "url": "https://github.com/CapibaraZero/EvilPortal"
     },
-    "version": "1.11",
+    "version": "1.12",
     "frameworks": "arduino",
     "dependencies":
     {
@@ -20,6 +20,6 @@
         "WiFi": "*",
         "ESPmDNS": "*",
         "DNSServer": "*",
-        "PosixSD": "https://github.com/CapibaraZero/PosixSD.git"
+        "FS": "*"
     }
 }

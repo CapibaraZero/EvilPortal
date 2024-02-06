@@ -1,3 +1,20 @@
+/*
+ * This file is part of the Capibara zero (https://github.com/CapibaraZero/fw or https://capibarazero.github.io/).
+ * Copyright (c) 2024 Andrea Canale.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include <Arduino.h>
 #include <WiFi.h>
 #include <ESPmDNS.h>
@@ -7,47 +24,25 @@
 
 void EvilPortal::initialize_server()
 {
+    dnsServer.start(DNS_PORT, "*", WiFi.softAPIP());
+    if (!MDNS.begin(mdns))
+    {
+        Serial0.printf("Error starting mDNS");
+        return;
+    }
     handler.server.addHandler(new CaptiveRequestHandler()).setFilter(ON_AP_FILTER);
     handler.server.begin();
 }
 
 EvilPortal::EvilPortal(const char *mdns_name, const char *static_path)
 {
-    dnsServer.start(DNS_PORT, "*", WiFi.softAPIP());
-    if (!MDNS.begin(mdns_name))
-    {
-        Serial0.printf("Error starting mDNS");
-        return;
-    }
-
+    mdns = mdns_name;
     handler.set_static_path(static_path);
-    initialize_server();
-
-    Serial0.printf("AP IP address: %s\n", WiFi.softAPIP().toString());
-
-    for (;;)
-    {
-        dnsServer.processNextRequest();
-    }
 }
 
 EvilPortal::EvilPortal(const char *mdns_name)
 {
-    dnsServer.start(DNS_PORT, "*", WiFi.softAPIP());
-    if (!MDNS.begin(mdns_name))
-    {
-        Serial0.printf("Error starting mDNS");
-        return;
-    }
-
-    initialize_server();
-
-    Serial0.printf("AP IP address: %s\n", WiFi.softAPIP().toString());
-
-    for (;;)
-    {
-        dnsServer.processNextRequest();
-    }
+    mdns = mdns_name;
 }
 
 EvilPortal::~EvilPortal()
@@ -55,5 +50,20 @@ EvilPortal::~EvilPortal()
     Serial0.printf("Stopping captive portal\n");
     handler.server.end();
     dnsServer.stop();
-    WiFi.softAPdisconnect(true);
+}
+
+void EvilPortal::start_portal()
+{
+    initialize_server();
+    for (;;)
+    {
+        dnsServer.processNextRequest();
+    }
+}
+
+void EvilPortal::stop_portal()
+{
+    Serial0.println("Stop portal");
+    handler.server.end();
+    dnsServer.stop();
 }

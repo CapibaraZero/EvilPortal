@@ -22,12 +22,18 @@
 
 #define DNS_PORT 53
 
+#ifdef ARDUINO_NANO_ESP32
+#define SERIAL_DEVICE Serial
+#else
+#define SERIAL_DEVICE Serial0
+#endif
+
 void EvilPortal::initialize_server()
 {
     dnsServer.start(DNS_PORT, "*", WiFi.softAPIP());
     if (!MDNS.begin(mdns))
     {
-        Serial0.printf("Error starting mDNS");
+        SERIAL_DEVICE.printf("Error starting mDNS");
         return;
     }
     handler.server.addHandler(new CaptiveRequestHandler()).setFilter(ON_AP_FILTER);
@@ -47,7 +53,7 @@ EvilPortal::EvilPortal(const char *mdns_name)
 
 EvilPortal::~EvilPortal()
 {
-    Serial0.printf("Stopping captive portal\n");
+    SERIAL_DEVICE.printf("Stopping captive portal\n");
     handler.server.end();
     dnsServer.stop();
 }
@@ -63,7 +69,7 @@ void EvilPortal::start_portal()
 
 void EvilPortal::stop_portal()
 {
-    Serial0.println("Stop portal");
+    SERIAL_DEVICE.println("Stop portal");
     handler.server.end();
     dnsServer.stop();
 }

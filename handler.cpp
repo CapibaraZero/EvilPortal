@@ -36,6 +36,12 @@ const char not_found[] PROGMEM = R"=====(
 extern void captive_portal_callback(AsyncWebServerRequest* request);
 #endif
 
+#ifdef ARDUINO_NANO_ESP32
+#define SERIAL_DEVICE Serial
+#else
+#define SERIAL_DEVICE Serial0
+#endif
+
 CaptiveRequestHandler::CaptiveRequestHandler()
 {
     server.on(
@@ -46,10 +52,10 @@ CaptiveRequestHandler::CaptiveRequestHandler()
 	#ifdef CONFIG_USE_LOGIN_CALLBACK
 	    captive_portal_callback(request);
 	#else
-	    Serial0.printf("Enter in login page\n");
+	    SERIAL_DEVICE.printf("Enter in login page\n");
             for (size_t i = 0; i < request->args(); i++)
             {
-                Serial0.printf("%s: %s\n", request->argName(i), request->arg(i));
+                SERIAL_DEVICE.printf("%s: %s\n", request->argName(i), request->arg(i));
             }
 
             request->send(200);
@@ -64,7 +70,7 @@ CaptiveRequestHandler::~CaptiveRequestHandler() {}
 void CaptiveRequestHandler::set_static_path(const char *path) {
     server.serveStatic("/", SD, path);
     server.on("/", HTTP_GET, [path](AsyncWebServerRequest *request){
-        Serial0.printf("Client connected. Ip: %s\n", request->client()->remoteIP().toString());
+        SERIAL_DEVICE.printf("Client connected. Ip: %s\n", request->client()->remoteIP().toString());
         request->send(SD, (String)path + "/index.html", "text/html");
     });
 }
@@ -76,7 +82,7 @@ bool CaptiveRequestHandler::canHandle(AsyncWebServerRequest *request)
 
 void CaptiveRequestHandler::handleRequest(AsyncWebServerRequest *request)
 {
-    Serial0.printf("Client connected. Ip: %s\n", request->client()->remoteIP().toString());
+    SERIAL_DEVICE.printf("Client connected. Ip: %s\n", request->client()->remoteIP().toString());
     AsyncResponseStream *response = request->beginResponseStream("text/html"); 
     response->print(not_found);
     request->send(response);

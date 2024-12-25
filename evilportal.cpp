@@ -22,7 +22,7 @@
 
 #define DNS_PORT 53
 
-#ifdef ARDUINO_NANO_ESP32
+#ifndef ESP32S3_DEVKITC_BOARD
 #define SERIAL_DEVICE Serial
 #else
 #define SERIAL_DEVICE Serial0

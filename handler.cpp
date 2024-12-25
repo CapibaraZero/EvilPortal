@@ -36,7 +36,7 @@ const char not_found[] PROGMEM = R"=====(
 extern void captive_portal_callback(AsyncWebServerRequest* request);
 #endif
 
-#ifdef ARDUINO_NANO_ESP32
+#ifndef ESP32S3_DEVKITC_BOARD
 #define SERIAL_DEVICE Serial
 #else
 #define SERIAL_DEVICE Serial0
@@ -68,8 +68,15 @@ CaptiveRequestHandler::CaptiveRequestHandler()
 CaptiveRequestHandler::~CaptiveRequestHandler() {}
 
 void CaptiveRequestHandler::set_static_path(const char *path) {
-    server.serveStatic("/", SD, path);
     server.on("/", HTTP_GET, [path](AsyncWebServerRequest *request){
+        SERIAL_DEVICE.printf("Client connected. Ip: %s\n", request->client()->remoteIP().toString());
+        request->send(SD, (String)path + "/index.html", "text/html");
+    });
+    server.on("/generate_204", HTTP_GET, [path](AsyncWebServerRequest *request){
+        SERIAL_DEVICE.printf("Client connected. Ip: %s\n", request->client()->remoteIP().toString());
+        request->send(SD, (String)path + "/index.html", "text/html");
+    });
+    server.on("/generate_204/", HTTP_GET, [path](AsyncWebServerRequest *request){
         SERIAL_DEVICE.printf("Client connected. Ip: %s\n", request->client()->remoteIP().toString());
         request->send(SD, (String)path + "/index.html", "text/html");
     });
